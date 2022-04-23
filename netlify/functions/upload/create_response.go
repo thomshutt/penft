@@ -38,7 +38,7 @@ func createResponse(aesKey, ipfsHash string) string {
     <p>
       Your image decryption key is <strong>` + aesKey + `</strong>
 
-      <br /><br />⚠️ Make sure that you've stored it securely before continuing. It won't be shown again.'
+      <br /><br />⚠️ Make sure that you've stored it securely before continuing. It won't be shown again.
     </p>
     <footer>
       <a href="/display.html?ipfs=` + ipfsHash + `" role="button">Continue</a>
