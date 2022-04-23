@@ -46,6 +46,7 @@
                 exifIMG.src = 'data:image/jpeg;base64,' + binaryDecrypted.toString(CryptoJS.enc.Utf8);
             });
 
+            console.log("Params.ipfs " + params.ipfs)
             if(params.ipfs) {
                 document.getElementById("ipfsInput").value = params.ipfs;
                 getExif();
