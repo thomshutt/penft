@@ -4,4 +4,3 @@
 
 [build.environment]
   GO_IMPORT_PATH = "github.com/thomshutt/penft"
-  GO111MODULE = "on"
