@@ -16,6 +16,10 @@
     <script type="text/javascript" src="js/exif-js.js"></script>
     <script type="text/javascript" src="js/crypto-js.min.js"></script>
     <script type="text/javascript">
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+        });
+
         function convertASCIItoHex(asciiString) {
             let hex = '';
             asciiString.split('').map( i => {
@@ -41,6 +45,11 @@
 
                 exifIMG.src = 'data:image/jpeg;base64,' + binaryDecrypted.toString(CryptoJS.enc.Utf8);
             });
+
+            if(params.ipfs) {
+                document.getElementById("ipfsInput").value = params.ipfs;
+                getExif();
+            }
         }
 
         function fetchAndDecrypt() {
