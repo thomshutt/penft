@@ -22,6 +22,11 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 		return nil, err
 	}
 
+	// some headers may be important, let get all of them, just in case
+	for name, value := range request.Headers {
+		httpReq.Header.Add(name, value)
+	}
+
 	file, _, err := httpReq.FormFile("file")
 	if err != nil {
 		return nil, err
