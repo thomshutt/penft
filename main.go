@@ -21,6 +21,7 @@ import (
 	"net/http"
 )
 
+const TATUM_API_KEY = "TODO"
 const imageFile = "public/images/ape.jpg"
 
 var iv = []byte{'\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f'}
