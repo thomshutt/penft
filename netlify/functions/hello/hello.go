@@ -97,12 +97,18 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 	responseBody += ". IPFS: " + ipfsUploadResponse.IPFSHash
 
 	return &events.APIGatewayProxyResponse{
-		StatusCode: 200,
-		Headers:    map[string]string{"Content-Type": "text/plain"},
-		//MultiValueHeaders: http.Header{"Set-Cookie": {"Ding", "Ping"}},
-		Body:            responseBody,
-		IsBase64Encoded: false,
+		//	StatusCode: 200,
+		//	Headers:    map[string]string{"Content-Type": "text/plain"},
+		//
+		//	//MultiValueHeaders: http.Header{"Set-Cookie": {"Ding", "Ping"}},
+		//	Body:            responseBody,
+		//	IsBase64Encoded: false,
+		StatusCode: http.StatusPermanentRedirect,
+		Headers: map[string]string{
+			"location": "/display.html?ipfs=" + ipfsUploadResponse.IPFSHash,
+		},
 	}, nil
+
 }
 
 func writeDataToDNGTag(visibleImageBytes []byte, data []byte) ([]byte, error) {

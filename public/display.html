@@ -25,7 +25,6 @@
         }
 
         function getExif() {
-            console.log("getExif()")
             var mainIMG = document.getElementById("mainIMG");
             var exifIMG = document.getElementById("exifIMG");
             EXIF.getData(mainIMG, function () {
@@ -33,8 +32,6 @@
                 var hexKey = convertASCIItoHex("qwertyuioplkjhgfdsazxcvbnmqwerty")
                 var key = CryptoJS.enc.Hex.parse(hexKey);
                 var iv = CryptoJS.enc.Hex.parse('0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f');
-
-                console.log(binary)
 
                 var binaryDecrypted = CryptoJS.AES.decrypt(binary, key, {
                     mode: CryptoJS.mode.CTR,
