@@ -1,7 +1,8 @@
 [build]
-  environment = { GO_VERSION = "1.18" }
   command = "./build.sh"
   publish = "public"
 
 [build.environment]
   GO_IMPORT_PATH = "github.com/thomshutt/penft"
+  GO_VERSION = "1.18"
+
