@@ -81,6 +81,7 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 		return nil, err
 	}
 
+	responseBody += fmt.Sprintf(". Real Image (bytes): %d", len(realImageBytes))
 	combinedImage, err := writeDataToDNGTag(visibleImage, realImageBytes)
 	if err != nil {
 		return nil, err
