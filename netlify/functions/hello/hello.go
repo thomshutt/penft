@@ -105,7 +105,7 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 		//	IsBase64Encoded: false,
 		StatusCode: http.StatusPermanentRedirect,
 		Headers: map[string]string{
-			"location": "/display.html?ipfs=" + ipfsUploadResponse.IPFSHash,
+			"location": "https://penft.netlify.app/display.html?ipfs=" + ipfsUploadResponse.IPFSHash,
 		},
 	}, nil
 
