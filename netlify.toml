@@ -7,4 +7,4 @@
   GO_VERSION = "1.18"
 
 [functions]
-  included_files = ["public/**"]
+  included_files = ["**"]
