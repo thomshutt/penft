@@ -31,9 +31,10 @@
         function getExif() {
             var mainIMG = document.getElementById("mainIMG");
             var exifIMG = document.getElementById("exifIMG");
+            var aesKey = document.getElementById("aesKey").value;
             EXIF.getData(mainIMG, function () {
                 var binary = EXIF.getTag(this, "undefined");
-                var hexKey = convertASCIItoHex("qwertyuioplkjhgfdsazxcvbnmqwerty")
+                var hexKey = convertASCIItoHex(aesKey)
                 var key = CryptoJS.enc.Hex.parse(hexKey);
                 var iv = CryptoJS.enc.Hex.parse('0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f');
 
@@ -68,8 +69,8 @@
 
 <main class="container" style="padding-top: 0px;">
     <h1>Image from IPFS</h1>
-    <label>IPFS ID</label><input id="ipfsInput" type="text"
-                                 placeholder="bafkreibzjip4ztnsd4m4ev7awtdkgfjgplnru7n6zi7i5uwf24vwsnmv5q"/>
+    <label>IPFS ID</label><input id="ipfsInput" type="text" placeholder="bafkreibzjip4ztnsd4m4ev7awtdkgfjgplnru7n6zi7i5uwf24vwsnmv5q"/>
+    <label>AES Key</label><input id="aesKey" type="text" value="qwertyuioplkjhgfdsazxcvbnmqwerty"/>
     <button onclick="fetchAndDecrypt()">Fetch & Decrypt</button>
     <img id="mainIMG" src="" onload="getExif()"/>
 

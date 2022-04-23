@@ -32,7 +32,7 @@ func createResponse(ipfsHash string) string {
 </header>
 
 <main class="container" style="padding-top: 0px;">
-Success! <br />Click <a href="/display.html?ipfs=` + ipfsHash + `">here</a> to see your image
+Success! Click <a href="/display.html?ipfs=` + ipfsHash + `">here</a> to see your image
 </main>
 </body>
 </html>
