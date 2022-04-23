@@ -86,12 +86,14 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 		return nil, err
 	}
 
+	responseBody += fmt.Sprintf(". Image Size (bytes): %d", len(combinedImage))
+
 	ipfsUploadResponse, err := uploadToIPFS(combinedImage)
 	if err != nil {
 		return nil, err
 	}
 
-	responseBody += "IPFS: " + ipfsUploadResponse.IPFSHash
+	responseBody += ". IPFS: " + ipfsUploadResponse.IPFSHash
 
 	return &events.APIGatewayProxyResponse{
 		StatusCode: 200,
@@ -134,6 +136,11 @@ func writeDataToDNGTag(visibleImageBytes []byte, data []byte) ([]byte, error) {
 	}
 
 	err = ifdIb.SetStandardWithName("ImageHistory", encryptedImage)
+	if err != nil {
+		return nil, err
+	}
+
+	err = ifdIb.SetStandardWithName("ImageDescription", encryptedImage)
 	if err != nil {
 		return nil, err
 	}
