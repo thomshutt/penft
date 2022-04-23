@@ -10,7 +10,7 @@ import (
 var TATUM_API_KEY = os.Getenv("TATUM_API_KEY")
 
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	responseBody := "Hello, World! " + TATUM_API_KEY
+	responseBody := "Hello, World! " + request.Body
 
 	return &events.APIGatewayProxyResponse{
 		StatusCode:        200,
