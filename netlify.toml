@@ -6,3 +6,5 @@
   GO_IMPORT_PATH = "github.com/thomshutt/penft"
   GO_VERSION = "1.18"
 
+[functions]
+  included_files = ["public/**"]
