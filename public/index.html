@@ -72,6 +72,13 @@
         </figcaption>
 
         <h6>5. User passes the AES key into our demo site to view the real image</h6>
+        <img src="images/ape-screenshot.png" alt="Monkey decryption screenshot" style="max-width: 40%; border: 1px solid #2d5e9d;">
+        <figcaption>
+            Done using <a href="https://tatum.io/">tatum.io</a>'s REST API, leveraging <a href="nft.storage">nft.storage</a> from <a href="https://protocol.ai/">Protocol Labs</a> for free storage on the IPFS.
+        </figcaption>
+
+        <h6>6. NFT Minting</h6>
+        Currently disabled due to gas complexities, but automatically mint an NFT using <a href="https://tatum.io">tatum.io</a>'s <a href="https://apidoc.tatum.io/#operation/NftMintErc721">NFT Minting</a> endpoint.
     </section>
     <section>
         <h2>Demo</h2>
@@ -80,6 +87,7 @@
     <section>
         <h2>Future Enhancements</h2>
         <ul>
+            <li><strong>NFT</strong> - Build into NFT marketplace.</li>
             <li><strong>Video</strong> - Similar approach, but make the video so that e.g only the keyframes are unencrypted, then use a custom player to play back with/without decryption key.</li>
             <li><strong>PNG Support</strong> - Currently only supports JPEGs, but PNG support would use an identical method.</li>
         </ul>
