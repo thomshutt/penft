@@ -22,7 +22,7 @@
 
         function convertASCIItoHex(asciiString) {
             let hex = '';
-            asciiString.split('').map( i => {
+            asciiString.split('').map(i => {
                 hex += i.charCodeAt(0).toString(16);
             });
             return hex.trim();
@@ -45,12 +45,6 @@
 
                 exifIMG.src = 'data:image/jpeg;base64,' + binaryDecrypted.toString(CryptoJS.enc.Utf8);
             });
-
-            console.log("Params.ipfs " + params.ipfs)
-            if(params.ipfs) {
-                document.getElementById("ipfsInput").value = params.ipfs;
-                getExif();
-            }
         }
 
         function fetchAndDecrypt() {
@@ -74,15 +68,20 @@
 
 <main class="container" style="padding-top: 0px;">
     <h1>Image from IPFS</h1>
-    <label>IPFS ID</label><input id="ipfsInput" type="text" placeholder="bafkreibzjip4ztnsd4m4ev7awtdkgfjgplnru7n6zi7i5uwf24vwsnmv5q"/>
+    <label>IPFS ID</label><input id="ipfsInput" type="text"
+                                 placeholder="bafkreibzjip4ztnsd4m4ev7awtdkgfjgplnru7n6zi7i5uwf24vwsnmv5q"/>
     <button onclick="fetchAndDecrypt()">Fetch & Decrypt</button>
-    <img id="mainIMG" src="" onload="getExif()" />
+    <img id="mainIMG" src="" onload="getExif()"/>
 
     <h1>Decrypted Image</h1>
-    <img id="exifIMG" src="" />
+    <img id="exifIMG" src=""/>
 </main>
 
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script type="text/javascript">
+    if (params.ipfs) {
+        document.getElementById("ipfsInput").value = params.ipfs;
+        getExif();
+    }
+</script>
 </body>
 </html>
