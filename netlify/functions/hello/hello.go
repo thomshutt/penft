@@ -17,6 +17,12 @@ var TATUM_API_KEY = os.Getenv("TATUM_API_KEY")
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	responseBody := "Hello, World! "
 
+	getwd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	os.Setenv("TMPDIR", getwd)
+
 	httpReq, err := http.NewRequestWithContext(context.Background(), request.HTTPMethod, request.Path, strings.NewReader(request.Body))
 	if err != nil {
 		return nil, err
