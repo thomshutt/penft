@@ -1,0 +1,47 @@
+<html>
+<head>
+    <title>PENFT</title>
+    <script type="text/javascript" src="exif-js.js"></script>
+    <script type="text/javascript" src="crypto-js.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    function convertASCIItoHex(asciiString) {
+        let hex = '';
+        asciiString.split('').map( i => {
+            hex += i.charCodeAt(0).toString(16);
+        });
+        return hex.trim();
+    }
+
+    function getExif() {
+        var mainIMG = document.getElementById("mainIMG");
+        var exifIMG = document.getElementById("exifIMG");
+        EXIF.getData(mainIMG, function () {
+            var binary = EXIF.getTag(this, "undefined");
+            var hexKey = convertASCIItoHex("qwertyuioplkjhgfdsazxcvbnmqwerty")
+            var key = CryptoJS.enc.Hex.parse(hexKey);
+            var iv = CryptoJS.enc.Hex.parse('0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f');
+
+            var binaryDecrypted = CryptoJS.AES.decrypt(binary, key, {
+                mode: CryptoJS.mode.CTR,
+                iv: iv,
+                padding: CryptoJS.pad.NoPadding
+            });
+
+            exifIMG.src = 'data:image/jpeg;base64,' + binaryDecrypted.toString(CryptoJS.enc.Utf8);
+        });
+    }
+</script>
+<img id="mainIMG" src="images/encrypted-image.jpg" />
+
+<br /><br />
+
+Decryption Key: <input type="text" style="width: 500px;" value="qwertyuioplkjhgfdsazxcvbnmqwerty" />
+<br />
+<input type="button" onclick="getExif()" value="Extract from EXIF and decrypt">
+
+<br /><br />
+
+<img id="exifIMG"/>
+</body>
