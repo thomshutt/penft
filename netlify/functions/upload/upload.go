@@ -97,12 +97,8 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 	responseBody += ". IPFS: " + ipfsUploadResponse.IPFSHash
 
 	return &events.APIGatewayProxyResponse{
-		//	StatusCode: 200,
-		Headers: map[string]string{"Content-Type": "text/html"},
-		//
-		//	//MultiValueHeaders: http.Header{"Set-Cookie": {"Ding", "Ping"}},
-		Body: `<html><body>Success! <br />Click <a href="/display.html?ipfs=` + ipfsUploadResponse.IPFSHash + `">here</a> to see your image</body></html>`,
-		//	IsBase64Encoded: false,
+		Headers:    map[string]string{"Content-Type": "text/html"},
+		Body:       createResponse(ipfsUploadResponse.IPFSHash),
 		StatusCode: http.StatusOK,
 	}, nil
 
@@ -179,48 +175,48 @@ func encryptToBase64(toEncrypt []byte) (string, error) {
 	return base64.StdEncoding.EncodeToString(ciphertext), nil
 }
 
-//func mintNFT(ipfsID string) (MintNFTResponse, error) {
-//	mintNFTRequest := MintNFTRequest{
-//		Chain: "ETH",
-//		To:    "0x53e8577C4347C365E4e0DA5B57A589cB6f2AB848",
-//		Url:   "ipfs://" + ipfsID,
-//	}
-//
-//	jsonBytes, err := json.Marshal(mintNFTRequest)
-//	if err != nil {
-//		return MintNFTResponse{}, err
-//	}
-//
-//	req, err := http.NewRequest("POST", "https://api-eu1.tatum.io/v3/nft/mint", bytes.NewReader(jsonBytes))
-//	if err != nil {
-//		return MintNFTResponse{}, err
-//	}
-//
-//	req.Header.Add("content-type", "application/json")
-//	req.Header.Add("x-testnet-type", "ethereum-ropsten")
-//	req.Header.Add("x-api-key", TATUM_API_KEY)
-//
-//	resp, err := http.DefaultClient.Do(req)
-//	if err != nil {
-//		return MintNFTResponse{}, err
-//	}
-//	defer resp.Body.Close()
-//
-//	respBody, err := ioutil.ReadAll(resp.Body)
-//	if err != nil {
-//		return MintNFTResponse{}, err
-//	}
-//	if resp.StatusCode != http.StatusOK {
-//		return MintNFTResponse{}, fmt.Errorf("Got error code while minting NFT: %d. Resp body: %s", resp.StatusCode, respBody)
-//	}
-//
-//	var mintNFTResponse MintNFTResponse
-//	if err := json.Unmarshal(respBody, &mintNFTResponse); err != nil {
-//		return MintNFTResponse{}, err
-//	}
-//
-//	return mintNFTResponse, nil
-//}
+func mintNFT(ipfsID string) (MintNFTResponse, error) {
+	mintNFTRequest := MintNFTRequest{
+		Chain: "ETH",
+		To:    "0x53e8577C4347C365E4e0DA5B57A589cB6f2AB848",
+		Url:   "ipfs://" + ipfsID,
+	}
+
+	jsonBytes, err := json.Marshal(mintNFTRequest)
+	if err != nil {
+		return MintNFTResponse{}, err
+	}
+
+	req, err := http.NewRequest("POST", "https://api-eu1.tatum.io/v3/nft/mint", bytes.NewReader(jsonBytes))
+	if err != nil {
+		return MintNFTResponse{}, err
+	}
+
+	req.Header.Add("content-type", "application/json")
+	req.Header.Add("x-testnet-type", "ethereum-ropsten")
+	req.Header.Add("x-api-key", TATUM_API_KEY)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return MintNFTResponse{}, err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return MintNFTResponse{}, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return MintNFTResponse{}, fmt.Errorf("Got error code while minting NFT: %d. Resp body: %s", resp.StatusCode, respBody)
+	}
+
+	var mintNFTResponse MintNFTResponse
+	if err := json.Unmarshal(respBody, &mintNFTResponse); err != nil {
+		return MintNFTResponse{}, err
+	}
+
+	return mintNFTResponse, nil
+}
 
 func uploadToIPFS(file []byte) (IPFSUploadResponse, error) {
 	body := &bytes.Buffer{}
