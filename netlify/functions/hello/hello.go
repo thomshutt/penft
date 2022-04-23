@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"io/ioutil"
@@ -11,7 +12,16 @@ const TATUM_API_KEY = "3e69a90d-1bd7-4994-ae9f-0aefe391b452"
 const imageFile = "public/images/image.jpg"
 
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	_, err := ioutil.ReadFile(imageFile)
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		return nil, err
+	}
+
+	for _, file := range files {
+		fmt.Println(file.Name(), file.IsDir())
+	}
+
+	_, err = ioutil.ReadFile(imageFile)
 	if err != nil {
 		return nil, err
 	}
