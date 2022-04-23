@@ -14,6 +14,7 @@ import (
 	"image/draw"
 	"image/jpeg"
 	"io"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -21,7 +22,7 @@ import (
 )
 
 const TATUM_API_KEY = "3e69a90d-1bd7-4994-ae9f-0aefe391b452"
-const imageFile = "public/images/image.jpg"
+const imageFile = "public/images/ape.jpg"
 
 var iv = []byte{'\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f'}
 var key = []byte("qwertyuioplkjhgfdsazxcvbnmqwerty")
@@ -62,10 +63,10 @@ func main() {
 		log.Fatalf("%v", err)
 	}
 
-	//err = ioutil.WriteFile("public/images/encrypted-image.jpg", combinedImage, fs.ModePerm)
-	//if err != nil {
-	//	log.Fatalf("%v", err)
-	//}
+	err = ioutil.WriteFile("public/images/encrypted-image.jpg", combinedImage, fs.ModePerm)
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
 
 	ipfsUploadResponse, err := uploadToIPFS(combinedImage)
 	if err != nil {
@@ -73,13 +74,13 @@ func main() {
 	}
 
 	println("IPFS:", ipfsUploadResponse.IPFSHash)
-
-	mintNFTResponse, err := mintNFT(ipfsUploadResponse.IPFSHash)
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
-
-	println("mintNFTResponse.TxId:", mintNFTResponse.TxId, "mintNFTResponse.failed", mintNFTResponse.Failed)
+	//
+	//mintNFTResponse, err := mintNFT(ipfsUploadResponse.IPFSHash)
+	//if err != nil {
+	//	log.Fatalf("%v", err)
+	//}
+	//
+	//println("mintNFTResponse.TxId:", mintNFTResponse.TxId, "mintNFTResponse.failed", mintNFTResponse.Failed)
 }
 
 func alterVisibleImage(imageBytes []byte) ([]byte, error) {
