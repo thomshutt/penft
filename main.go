@@ -13,13 +13,14 @@ import (
 	"image/color"
 	"image/draw"
 	"image/jpeg"
-	"io/fs"
+	"io"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 )
 
-const TATUM_API_KEY = "TODO"
+const TATUM_API_KEY = "3e69a90d-1bd7-4994-ae9f-0aefe391b452"
 const imageFile = "public/images/image.jpg"
 
 var iv = []byte{'\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f'}
@@ -61,10 +62,10 @@ func main() {
 		log.Fatalf("%v", err)
 	}
 
-	err = ioutil.WriteFile("public/images/encrypted-image.jpg", combinedImage, fs.ModePerm)
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
+	//err = ioutil.WriteFile("public/images/encrypted-image.jpg", combinedImage, fs.ModePerm)
+	//if err != nil {
+	//	log.Fatalf("%v", err)
+	//}
 
 	ipfsUploadResponse, err := uploadToIPFS(combinedImage)
 	if err != nil {
@@ -218,16 +219,16 @@ func mintNFT(ipfsID string) (MintNFTResponse, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return MintNFTResponse{}, fmt.Errorf("Got error code while minting NFT: %d", resp.StatusCode)
-	}
-	body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return MintNFTResponse{}, err
 	}
+	if resp.StatusCode != http.StatusOK {
+		return MintNFTResponse{}, fmt.Errorf("Got error code while minting NFT: %d. Resp body: %s", resp.StatusCode, respBody)
+	}
 
 	var mintNFTResponse MintNFTResponse
-	if err := json.Unmarshal(body, &mintNFTResponse); err != nil {
+	if err := json.Unmarshal(respBody, &mintNFTResponse); err != nil {
 		return MintNFTResponse{}, err
 	}
 
@@ -235,12 +236,30 @@ func mintNFT(ipfsID string) (MintNFTResponse, error) {
 }
 
 func uploadToIPFS(file []byte) (IPFSUploadResponse, error) {
-	req, err := http.NewRequest(http.MethodPost, "https://api-eu1.tatum.io/v3/ipfs", bytes.NewReader(file))
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	part, err := writer.CreateFormFile("file", "file.jpg")
 	if err != nil {
 		return IPFSUploadResponse{}, err
 	}
-	req.Header.Set("content-type", "multipart/form-data")
+
+	_, err = io.Copy(part, bytes.NewReader(file))
+	if err != nil {
+		return IPFSUploadResponse{}, err
+	}
+
+	err = writer.Close()
+	if err != nil {
+		return IPFSUploadResponse{}, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, "https://api-eu1.tatum.io/v3/ipfs", body)
+	if err != nil {
+		return IPFSUploadResponse{}, err
+	}
 	req.Header.Set("x-api-key", TATUM_API_KEY)
+	req.Header.Add("Content-Type", writer.FormDataContentType())
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -249,16 +268,16 @@ func uploadToIPFS(file []byte) (IPFSUploadResponse, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return IPFSUploadResponse{}, err
 	}
-	if resp.StatusCode != http.StatusOK {
-		return IPFSUploadResponse{}, fmt.Errorf("Got error code while uploading to IPFS: %d. Body: %s", resp.StatusCode, body)
+	if resp.StatusCode != http.StatusCreated {
+		return IPFSUploadResponse{}, fmt.Errorf("Got error code while uploading to IPFS: %d. Body: %s", resp.StatusCode, respBody)
 	}
 
 	var ipfsResponse IPFSUploadResponse
-	if err := json.Unmarshal(body, &ipfsResponse); err != nil {
+	if err := json.Unmarshal(respBody, &ipfsResponse); err != nil {
 		return IPFSUploadResponse{}, err
 	}
 
