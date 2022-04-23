@@ -27,7 +27,7 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 
 	var content []byte
 	part, err := r.NextPart()
-	for err == nil {
+	for err == nil && part != nil {
 		partBytes, err := io.ReadAll(part)
 		if err != nil {
 			return nil, err
