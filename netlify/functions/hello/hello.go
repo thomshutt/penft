@@ -12,13 +12,13 @@ const TATUM_API_KEY = "3e69a90d-1bd7-4994-ae9f-0aefe391b452"
 const imageFile = "public/images/image.jpg"
 
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	files, err := ioutil.ReadDir(".")
+	files, err := ioutil.ReadDir("..")
 	if err != nil {
 		return nil, err
 	}
 
 	for _, file := range files {
-		fmt.Println(file.Name(), file.IsDir())
+		fmt.Println("File: ", file.Name(), file.IsDir())
 	}
 
 	_, err = ioutil.ReadFile(imageFile)
