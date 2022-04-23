@@ -101,7 +101,7 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 		Headers: map[string]string{"Content-Type": "text/html"},
 		//
 		//	//MultiValueHeaders: http.Header{"Set-Cookie": {"Ding", "Ping"}},
-		Body: `<html><body>Success! <br />Click <a href="/display.html?ipfs="` + ipfsUploadResponse.IPFSHash + `">here</a> to see your image</body></html>`,
+		Body: `<html><body>Success! <br />Click <a href="/display.html?ipfs=` + ipfsUploadResponse.IPFSHash + `">here</a> to see your image</body></html>`,
 		//	IsBase64Encoded: false,
 		StatusCode: http.StatusOK,
 	}, nil
