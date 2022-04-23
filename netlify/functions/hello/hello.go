@@ -101,12 +101,9 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 		//	Headers:    map[string]string{"Content-Type": "text/plain"},
 		//
 		//	//MultiValueHeaders: http.Header{"Set-Cookie": {"Ding", "Ping"}},
-		//	Body:            responseBody,
+		Body: `Success! <br />Click <a href="/display.html?ipfs="` + ipfsUploadResponse.IPFSHash + `">here</a> to see your image`,
 		//	IsBase64Encoded: false,
-		StatusCode: http.StatusPermanentRedirect,
-		Headers: map[string]string{
-			"location": "https://penft.netlify.app/display.html?ipfs=" + ipfsUploadResponse.IPFSHash,
-		},
+		StatusCode: http.StatusOK,
 	}, nil
 
 }
