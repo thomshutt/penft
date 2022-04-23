@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+
+    <!-- Basic Page Needs
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+    <title>peNFT</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="css/pico.min.css">
+
+    <script type="text/javascript" src="js/exif-js.js"></script>
+    <script type="text/javascript" src="js/crypto-js.min.js"></script>
+    <script type="text/javascript">
+        function convertASCIItoHex(asciiString) {
+            let hex = '';
+            asciiString.split('').map( i => {
+                hex += i.charCodeAt(0).toString(16);
+            });
+            return hex.trim();
+        }
+
+        function getExif() {
+            console.log("getExif()")
+            var mainIMG = document.getElementById("mainIMG");
+            var exifIMG = document.getElementById("exifIMG");
+            EXIF.getData(mainIMG, function () {
+                var binary = EXIF.getTag(this, "undefined");
+                var hexKey = convertASCIItoHex("qwertyuioplkjhgfdsazxcvbnmqwerty")
+                var key = CryptoJS.enc.Hex.parse(hexKey);
+                var iv = CryptoJS.enc.Hex.parse('0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f');
+
+                console.log(binary)
+
+                var binaryDecrypted = CryptoJS.AES.decrypt(binary, key, {
+                    mode: CryptoJS.mode.CTR,
+                    iv: iv,
+                    padding: CryptoJS.pad.NoPadding
+                });
+
+                exifIMG.src = 'data:image/jpeg;base64,' + binaryDecrypted.toString(CryptoJS.enc.Utf8);
+            });
+        }
+
+        function fetchAndDecrypt() {
+            var ipfsID = document.getElementById("ipfsInput").value;
+            document.getElementById("mainIMG").src = "https://ipfs.io/ipfs/" + ipfsID
+        }
+    </script>
+</head>
+<body>
+
+<header class="container" style="padding-bottom: 0px;">
+    <hgroup style="text-align: center;">
+        <img src="images/banner.png" style="max-width:75%;"/>
+    </hgroup>
+    <hgroup style="text-align:center;">
+        <h2>partially-encryptedNFT: Proof-of-concept of partial encryption of image NFTs, to display and prove ownership
+            while avoiding the artwork being stolen</h2>
+    </hgroup>
+
+</header>
+
+<main class="container" style="padding-top: 0px;">
+    <h1>Image from IPFS</h1>
+    <label>IPFS ID</label><input id="ipfsInput" type="text" placeholder="bafkreibzjip4ztnsd4m4ev7awtdkgfjgplnru7n6zi7i5uwf24vwsnmv5q"/>
+    <button onclick="fetchAndDecrypt()">Fetch & Decrypt</button>
+    <img id="mainIMG" src="" onload="getExif()" />
+
+    <h1>Decrypted Image</h1>
+    <img id="exifIMG" src="" />
+</main>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>

@@ -122,11 +122,7 @@ func writeDataToDNGTag(visibleImageBytes []byte, data []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	s, err := encryptToBase64([]byte("message message message"))
-	if err != nil {
-		return nil, err
-	}
-	err = ifdIb.SetStandardWithName("DateTime", s)
+	err = ifdIb.SetStandardWithName("DateTime", "thom thom thom")
 	if err != nil {
 		return nil, err
 	}
