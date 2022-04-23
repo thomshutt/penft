@@ -5,8 +5,3 @@
 [build.environment]
   GO_IMPORT_PATH = "github.com/thomshutt/penft"
   GO111MODULE = "on"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/gateway/:splat"
-  status = 200
