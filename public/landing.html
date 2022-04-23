@@ -24,12 +24,21 @@
         <h2>partially-encryptedNFT: Proof-of-concept of partial encryption of image NFTs, to display and prove ownership
             while avoiding the artwork being stolen</h2>
     </hgroup>
+
 </header>
 
 <main class="container" style="padding-top: 0px;">
 
     <!-- Typography-->
     <section id="typography">
+        <h2 style="margin-bottom: 0px;">Why?</h2>
+        <blockquote>
+            "Why did you pay for that? I can just copy and paste it"
+            <footer>
+                <cite>- Some guy on Twitter</cite>
+            </footer>
+        </blockquote>
+        <p>This project explores a technique for </p>
         <h2>How It Works</h2>
         <h6>1. User uploads an image</h6>
         <figure>
@@ -53,6 +62,7 @@
             <img src="images/ape-exif.jpg" alt="Monkey pic with EXIF data" style="max-width: 70%">
             <figcaption>
                 Any EXIF field that contains binary data and doesn't have a size limit would work. The AES key that we used for encryption is returned to the user. Responsibility for secure storage is currently on them.
+                We heard you like monkey pictures, so we put a monkey picture in your monkey picture.
             </figcaption>
         </figure>
 
@@ -61,6 +71,20 @@
         <figcaption>
             Done using <a href="https://tatum.io/">tatum.io</a>'s REST API, leveraging <a href="nft.storage">nft.storage</a> from <a href="https://protocol.ai/">Protocol Labs</a> for free storage on the IPFS.
         </figcaption>
+
+        <h6>5. User passes the AES key into our demo site to view the real image</h6>
+    </section>
+    <section>
+        <h2>Demo</h2>
+        TODO
+    </section>
+    <section>
+        <h2>Future Enhancements</h2>
+        <ul>
+            <li><strong>Video</strong> - Similar approach, but make the video so that e.g only the keyframes are unencrypted, then use a custom player to play back with/without decryption key.</li>
+            <li><strong>PNG Support</strong> - Currently only supports JPEGs, but PNG support would use an identical method.</li>
+        </ul>
+    </section>
 </main>
 
 <!-- End Document
