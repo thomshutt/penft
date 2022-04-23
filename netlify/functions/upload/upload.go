@@ -18,9 +18,11 @@ import (
 	"image/jpeg"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"time"
 )
 
 type IPFSUploadResponse struct {
@@ -41,17 +43,22 @@ type MintNFTResponse struct {
 var TATUM_API_KEY = os.Getenv("TATUM_API_KEY")
 
 var iv = []byte{'\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f', '\x0f'}
-var key = []byte("qwertyuioplkjhgfdsazxcvbnmqwerty")
+
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+func RandStringRunes(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
+}
 
 func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	responseBody := "Hello, World! "
-
-	getwd, err := os.Getwd()
-	if err != nil {
-		return nil, err
-	}
-	os.Setenv("TMPDIR", getwd)
-
 	r, err := awslambda.NewReaderMultipart(req)
 	if err != nil {
 		return nil, err
@@ -71,8 +78,6 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 		return nil, err
 	}
 
-	responseBody += fmt.Sprintf("Buffer Length: %d", len(visibleImageBytes))
-
 	var realImageBytes = make([]byte, len(visibleImageBytes))
 	copy(realImageBytes, visibleImageBytes)
 
@@ -81,30 +86,26 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 		return nil, err
 	}
 
-	responseBody += fmt.Sprintf(". Real Image (bytes): %d", len(realImageBytes))
-	combinedImage, err := writeDataToDNGTag(visibleImage, realImageBytes)
+	key := RandStringRunes(32)
+	combinedImage, err := writeDataToDNGTag(key, visibleImage, realImageBytes)
 	if err != nil {
 		return nil, err
 	}
-
-	responseBody += fmt.Sprintf(". Image Size (bytes): %d", len(combinedImage))
 
 	ipfsUploadResponse, err := uploadToIPFS(combinedImage)
 	if err != nil {
 		return nil, err
 	}
 
-	responseBody += ". IPFS: " + ipfsUploadResponse.IPFSHash
-
 	return &events.APIGatewayProxyResponse{
 		Headers:    map[string]string{"Content-Type": "text/html"},
-		Body:       createResponse(ipfsUploadResponse.IPFSHash),
+		Body:       createResponse(key, ipfsUploadResponse.IPFSHash),
 		StatusCode: http.StatusOK,
 	}, nil
 
 }
 
-func writeDataToDNGTag(visibleImageBytes []byte, data []byte) ([]byte, error) {
+func writeDataToDNGTag(aesKey string, visibleImageBytes []byte, data []byte) ([]byte, error) {
 	jmp := jpegstructure.NewJpegMediaParser()
 
 	intfc, err := jmp.ParseBytes(visibleImageBytes)
@@ -130,7 +131,7 @@ func writeDataToDNGTag(visibleImageBytes []byte, data []byte) ([]byte, error) {
 	}
 
 	base64Image := base64.StdEncoding.EncodeToString(data)
-	encryptedImage, err := encryptToBase64([]byte(base64Image))
+	encryptedImage, err := encryptToBase64([]byte(aesKey), []byte(base64Image))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func writeDataToDNGTag(visibleImageBytes []byte, data []byte) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-func encryptToBase64(toEncrypt []byte) (string, error) {
+func encryptToBase64(key, toEncrypt []byte) (string, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err

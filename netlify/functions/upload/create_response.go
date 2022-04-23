@@ -1,6 +1,6 @@
 package main
 
-func createResponse(ipfsHash string) string {
+func createResponse(aesKey, ipfsHash string) string {
 	return `
 	<!DOCTYPE html>
 <html lang="en" data-theme="light">
@@ -32,7 +32,19 @@ func createResponse(ipfsHash string) string {
 </header>
 
 <main class="container" style="padding-top: 0px;">
-Success! Click <a href="/display.html?ipfs=` + ipfsHash + `">here</a> to see your image
+<dialog open>
+  <article>
+    <h3>Success!</h3>
+    <p>
+      Your image decryption key is <strong>` + aesKey + `</strong>
+
+      ⚠️ Make sure that you've stored it securely before continuing. It won't be shown again.'
+    </p>
+    <footer>
+      <a href="/display.html?ipfs=` + ipfsHash + `" role="button">Continue</a>
+    </footer>
+  </article>
+</dialog>
 </main>
 </body>
 </html>
