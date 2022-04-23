@@ -73,7 +73,7 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 
 	responseBody += fmt.Sprintf("Buffer Length: %d", len(visibleImageBytes))
 
-	var realImageBytes []byte
+	var realImageBytes = make([]byte, len(visibleImageBytes))
 	copy(realImageBytes, visibleImageBytes)
 
 	visibleImage, err := alterVisibleImage(visibleImageBytes)
